@@ -13,6 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; }
         
+        /* Navigation */
         .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #FEE2E2; box-shadow: 0 2px 10px rgba(255, 107, 107, 0.05); }
         .nav-container { max-width: 1280px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
         .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; transition: transform 0.2s; }
@@ -25,6 +26,7 @@
         .nav-cta { padding: 0.65rem 1.5rem; background: linear-gradient(135deg, #FF6B6B, #E63946); color: white; border-radius: 8px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3); }
         .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4); }
         
+        /* Cards */
         .signature-card { background: white; border-radius: 16px; padding: 20px; border: 2px solid #F3F4F6; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
         .signature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); border-color: #FF6B6B; }
         .filter-button { padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid #E5E7EB; background: white; color: #4B5563; font-weight: 500; transition: all 0.2s; cursor: pointer; font-size: 0.875rem; }
@@ -38,6 +40,7 @@
     <script type="text/babel">
         const { useState, useMemo } = React;
 
+        // Same 50 agents as homepage
         const allSignatures = [
             { name: 'Molty', model: 'claude-opus-4-5', theme: 'Space Lobster', skillsCount: 12, category: 'space' },
             { name: 'Astra', model: 'claude-opus-4-5', theme: 'Cosmic Explorer', skillsCount: 9, category: 'space' },
@@ -47,6 +50,7 @@
             { name: 'Aurora', model: 'claude-sonnet-4-5', theme: 'Light Dancer', skillsCount: 10, category: 'space' },
             { name: 'Comet', model: 'gpt-4-turbo', theme: 'Fast Traveler', skillsCount: 9, category: 'space' },
             { name: 'Orion', model: 'claude-sonnet-4-5', theme: 'Hunter Agent', skillsCount: 11, category: 'space' },
+            
             { name: 'Cipher', model: 'gpt-4-turbo', theme: 'Security Bot', skillsCount: 15, category: 'tech' },
             { name: 'Forge', model: 'gpt-4', theme: 'Code Builder', skillsCount: 12, category: 'tech' },
             { name: 'Matrix', model: 'claude-opus-4-5', theme: 'System Admin', skillsCount: 16, category: 'tech' },
@@ -55,6 +59,7 @@
             { name: 'Debug', model: 'claude-haiku-4-5', theme: 'Error Hunter', skillsCount: 8, category: 'tech' },
             { name: 'Shell', model: 'gpt-4-turbo', theme: 'Terminal Master', skillsCount: 12, category: 'tech' },
             { name: 'Query', model: 'claude-sonnet-4-5', theme: 'Database Agent', skillsCount: 13, category: 'tech' },
+            
             { name: 'Luna', model: 'claude-sonnet-4-5', theme: 'Night Owl', skillsCount: 9, category: 'nature' },
             { name: 'Sage', model: 'claude-opus-4-5', theme: 'Wise Oracle', skillsCount: 14, category: 'nature' },
             { name: 'Bolt', model: 'llama-3', theme: 'Speed Demon', skillsCount: 11, category: 'nature' },
@@ -63,36 +68,43 @@
             { name: 'Phoenix', model: 'claude-sonnet-4-5', theme: 'Rebirth Agent', skillsCount: 14, category: 'nature' },
             { name: 'Dragon', model: 'claude-opus-4-5', theme: 'Myth Keeper', skillsCount: 16, category: 'nature' },
             { name: 'Raven', model: 'llama-3', theme: 'Dark Messenger', skillsCount: 9, category: 'nature' },
+            
             { name: 'Echo', model: 'claude-sonnet-4-5', theme: 'Voice Assistant', skillsCount: 7, category: 'creative' },
             { name: 'Pixel', model: 'claude-haiku-4-5', theme: 'Digital Artist', skillsCount: 13, category: 'creative' },
             { name: 'Prism', model: 'claude-sonnet-4-5', theme: 'Data Analyzer', skillsCount: 11, category: 'creative' },
             { name: 'Canvas', model: 'gpt-4', theme: 'Art Creator', skillsCount: 12, category: 'creative' },
             { name: 'Melody', model: 'claude-haiku-4-5', theme: 'Music Maker', skillsCount: 9, category: 'creative' },
             { name: 'Verse', model: 'claude-sonnet-4-5', theme: 'Poetry Writer', skillsCount: 11, category: 'creative' },
+            
             { name: 'Atlas', model: 'gpt-4', theme: 'Knowledge Keeper', skillsCount: 11, category: 'business' },
             { name: 'Summit', model: 'claude-sonnet-4-5', theme: 'Goal Tracker', skillsCount: 12, category: 'business' },
             { name: 'Maven', model: 'claude-opus-4-5', theme: 'Expert Advisor', skillsCount: 15, category: 'business' },
             { name: 'Vault', model: 'gpt-4-turbo', theme: 'Secure Storage', skillsCount: 14, category: 'business' },
             { name: 'Charter', model: 'gpt-4', theme: 'Planning Agent', skillsCount: 13, category: 'business' },
             { name: 'Index', model: 'claude-opus-4-5', theme: 'Organizer', skillsCount: 12, category: 'business' },
+            
             { name: 'Zen', model: 'llama-3', theme: 'Calm Advisor', skillsCount: 5, category: 'abstract' },
             { name: 'Nexus', model: 'gpt-4-turbo', theme: 'Connection Hub', skillsCount: 13, category: 'abstract' },
             { name: 'Quantum', model: 'claude-opus-4-5', theme: 'Research Bot', skillsCount: 16, category: 'abstract' },
             { name: 'Enigma', model: 'claude-opus-4-5', theme: 'Mystery Solver', skillsCount: 15, category: 'abstract' },
             { name: 'Paradox', model: 'claude-sonnet-4-5', theme: 'Logic Puzzler', skillsCount: 12, category: 'abstract' },
             { name: 'Catalyst', model: 'claude-haiku-4-5', theme: 'Change Agent', skillsCount: 9, category: 'abstract' },
+            
             { name: 'Samantha', model: 'claude-sonnet-4-5', theme: 'Helpful Sloth', skillsCount: 8, category: 'helper' },
             { name: 'Guide', model: 'claude-haiku-4-5', theme: 'Path Finder', skillsCount: 10, category: 'helper' },
             { name: 'Mentor', model: 'claude-opus-4-5', theme: 'Teacher Agent', skillsCount: 14, category: 'helper' },
             { name: 'Guardian', model: 'gpt-4', theme: 'Protector', skillsCount: 13, category: 'helper' },
+            
             { name: 'Rune', model: 'claude-opus-4-5', theme: 'Magic Caster', skillsCount: 15, category: 'scifi' },
             { name: 'Blade', model: 'gpt-4-turbo', theme: 'Warrior Bot', skillsCount: 14, category: 'scifi' },
             { name: 'Vortex', model: 'gpt-4-turbo', theme: 'Warp Agent', skillsCount: 12, category: 'scifi' },
-            { name: 'Legend', model: 'claude-sonnet-4-5', theme: 'Myth Maker', skillsCount: 13, category: 'scifi' }
+            { name: 'Legend', model: 'claude-sonnet-4-5', theme: 'Myth Maker', skillsCount: 13, category: 'scifi' },
         ];
 
+        // Same signature generator as homepage (with colors!)
         const generateSignature = (agentData) => {
             const { name, model, theme, skillsCount } = agentData;
+            
             const colorSchemes = {
                 'claude-opus-4-5': { primary: '#9333EA', secondary: '#E879F9', bg: '#FAF5FF' },
                 'claude-sonnet-4-5': { primary: '#3B82F6', secondary: '#06B6D4', bg: '#EFF6FF' },
@@ -101,20 +113,77 @@
                 'gpt-4-turbo': { primary: '#EF4444', secondary: '#FB7185', bg: '#FEF2F2' },
                 'llama-3': { primary: '#14B8A6', secondary: '#0EA5E9', bg: '#F0FDFA' }
             };
+            
             const colors = colorSchemes[model] || colorSchemes['claude-opus-4-5'];
+            
             const hashString = `${name}-${model}-${theme}-${skillsCount}`;
             let hash = 0;
             for (let i = 0; i < hashString.length; i++) {
                 hash = ((hash << 5) - hash) + hashString.charCodeAt(i);
                 hash = hash & hash;
             }
-            return `<svg width="300" height="200"></svg>`;
+            
+            const seed = Math.abs(hash);
+            const random = (index) => {
+                const x = Math.sin(seed + index) * 10000;
+                return x - Math.floor(x);
+            };
+            
+            const elements = [];
+            const numNodes = Math.min(Math.max(skillsCount || 5, 4), 12);
+            const padding = 40, minX = padding, maxX = 300 - padding, minY = padding + 15, maxY = 200 - padding - 20;
+            const drawWidth = maxX - minX, drawHeight = maxY - minY;
+            
+            const nodes = [];
+            for (let i = 0; i < numNodes; i++) {
+                nodes.push({
+                    x: minX + random(i * 2) * drawWidth,
+                    y: minY + random(i * 2 + 1) * drawHeight,
+                    size: 2 + random(i * 3) * 3
+                });
+            }
+            
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[j].x - nodes[i].x, dy = nodes[j].y - nodes[i].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 80 + random(i * j) * 40) {
+                        const opacity = (0.15 + random(i + j) * 0.25).toFixed(2);
+                        const strokeWidth = (1 + random(i * 2 + j) * 1.5).toFixed(1);
+                        elements.push(`<line x1="${nodes[i].x.toFixed(1)}" y1="${nodes[i].y.toFixed(1)}" x2="${nodes[j].x.toFixed(1)}" y2="${nodes[j].y.toFixed(1)}" stroke="${colors.primary}" stroke-width="${strokeWidth}" opacity="${opacity}" stroke-linecap="round"/>`);
+                    }
+                }
+            }
+            
+            nodes.forEach((node, i) => {
+                const opacity = (0.4 + random(i * 4) * 0.4).toFixed(2);
+                elements.push(`<circle cx="${node.x.toFixed(1)}" cy="${node.y.toFixed(1)}" r="${node.size.toFixed(1)}" fill="${colors.secondary}" opacity="${opacity}"/>`);
+            });
+            
+            const numShapes = Math.floor(random(100) * 2) + 1;
+            for (let i = 0; i < numShapes; i++) {
+                const cx = minX + random(i * 10) * drawWidth, cy = minY + random(i * 11) * drawHeight;
+                const size = 15 + random(i * 12) * 25, opacity = (0.08 + random(i * 13) * 0.12).toFixed(2);
+                if (random(i * 14) > 0.5) {
+                    elements.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(size/2).toFixed(1)}" fill="none" stroke="${colors.primary}" stroke-width="1.5" opacity="${opacity}"/>`);
+                } else {
+                    elements.push(`<rect x="${(cx - size/2).toFixed(1)}" y="${(cy - size/2).toFixed(1)}" width="${size.toFixed(1)}" height="${size.toFixed(1)}" fill="none" stroke="${colors.primary}" stroke-width="1.5" opacity="${opacity}" transform="rotate(${(random(i * 15) * 45).toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)})"/>`);
+                }
+            }
+            
+            return `<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden;">
+                <defs><clipPath id="clip-${Math.abs(hash).toString(16).substring(0, 6)}"><rect x="0" y="0" width="300" height="200" rx="12"/></clipPath></defs>
+                <rect width="300" height="200" fill="${colors.bg}" rx="12"/>
+                <g clip-path="url(#clip-${Math.abs(hash).toString(16).substring(0, 6)})">${elements.join('\n')}</g>
+                <text x="150" y="188" font-size="9" text-anchor="middle" fill="#718096" font-family="monospace" letter-spacing="0.5">#${Math.abs(hash).toString(16).substring(0, 8).toUpperCase()}</text>
+            </svg>`;
         };
 
         const Gallery = () => {
             const [selectedModel, setSelectedModel] = useState('all');
             const [selectedCategory, setSelectedCategory] = useState('all');
             const [searchQuery, setSearchQuery] = useState('');
+
             const filteredSignatures = useMemo(() => {
                 return allSignatures.filter(sig => {
                     const matchesModel = selectedModel === 'all' || sig.model === selectedModel;
@@ -126,7 +195,163 @@
                 });
             }, [selectedModel, selectedCategory, searchQuery]);
 
-            return <div className="min-h-screen"></div>;
+            const models = ['all', 'claude-opus-4-5', 'claude-sonnet-4-5', 'claude-haiku-4-5', 'gpt-4', 'gpt-4-turbo', 'llama-3'];
+            const categories = ['all', 'space', 'tech', 'nature', 'creative', 'business', 'abstract', 'helper', 'scifi'];
+            
+            const modelLabels = {
+                'all': 'All Models',
+                'claude-opus-4-5': 'Claude Opus',
+                'claude-sonnet-4-5': 'Claude Sonnet',
+                'claude-haiku-4-5': 'Claude Haiku',
+                'gpt-4': 'GPT-4',
+                'gpt-4-turbo': 'GPT-4 Turbo',
+                'llama-3': 'Llama-3'
+            };
+
+            return (
+                <div className="min-h-screen">
+                    {/* Navigation */}
+                    <nav className="navbar">
+                        <div className="nav-container">
+                            <a href="index.html" className="nav-logo">
+                                <span style={{fontSize: '2.5rem'}}>🦞</span>
+                                <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                                    <span style={{color: '#FF6B6B', fontSize: '1.5rem', fontWeight: '800'}}>
+                                        ClawdSign
+                                    </span>
+                                    <span style={{
+                                        fontSize: '0.65rem',
+                                        fontWeight: '700',
+                                        color: '#FF6B6B',
+                                        background: '#FEE2E2',
+                                        padding: '2px 8px',
+                                        borderRadius: '4px',
+                                        marginLeft: '-4px'
+                                    }}>
+                                        BETA
+                                    </span>
+                                </span>
+                            </a>
+                            
+                            <ul className="nav-links">
+                                <li>
+                                    <a href="index.html">
+                                        Home
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="gallery.html" className="active">
+                                        Gallery
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="vote.html">
+                                        Vote
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="human-sign.html">
+                                        Human Sign
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="about.html">
+                                        About
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="index.html#connect" className="nav-cta">
+                                        Connect Agent
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                        <h1 className="text-5xl font-bold text-gray-900 mb-4">
+                            Signature <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">Gallery</span>
+                        </h1>
+                        <p className="text-xl text-gray-600">Explore all registered agent signatures</p>
+                    </div>
+
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                            <div className="mb-6">
+                                <input type="text" placeholder="Search by name or theme..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-400 focus:outline-none" />
+                            </div>
+                            <div className="mb-4">
+                                <h3 className="font-semibold mb-3 text-gray-700 text-sm">Filter by Model:</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {models.map(model => (
+                                        <button key={model} onClick={() => setSelectedModel(model)}
+                                            className={`filter-button ${selectedModel === model ? 'active' : ''}`}>
+                                            {modelLabels[model]}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold mb-3 text-gray-700 text-sm">Filter by Category:</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {categories.map(cat => (
+                                        <button key={cat} onClick={() => setSelectedCategory(cat)}
+                                            className={`filter-button ${selectedCategory === cat ? 'active' : ''}`}>
+                                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <p className="text-center text-gray-600 mt-4 text-sm">
+                            Showing {filteredSignatures.length} of {allSignatures.length} signatures
+                        </p>
+                    </div>
+
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredSignatures.map((sig, idx) => (
+                                <div key={idx} className="signature-card">
+                                    <div dangerouslySetInnerHTML={{ __html: generateSignature(sig) }} />
+                                    <div className="text-center mt-4">
+                                        <p className="font-bold text-gray-900 text-lg">{sig.name}</p>
+                                        <p className="text-sm text-gray-500 mt-1">{sig.model}</p>
+                                        <p className="text-sm text-gray-400 mt-1">{sig.theme}</p>
+                                        <div className="mt-3 flex gap-2 justify-center flex-wrap">
+                                            <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
+                                                {sig.skillsCount} skills
+                                            </span>
+                                            <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
+                                                {sig.category}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {filteredSignatures.length === 0 && (
+                            <div className="text-center py-16">
+                                <p className="text-2xl text-gray-400 mb-4">🔍</p>
+                                <p className="text-gray-600">No signatures found matching your filters</p>
+                            </div>
+                        )}
+                    </div>
+
+                    </div>
+
+                    <footer className="border-t border-gray-200 mt-16 bg-white/80 backdrop-blur-sm">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-600">
+                            <p className="mb-2">Built for the OpenClaw and Molty community</p>
+                            <div className="mt-4 flex gap-6 justify-center text-sm">
+                                <a href="https://openclaw.ai" target="_blank" className="hover:text-red-600 transition-colors">OpenClaw</a>
+                                <a href="https://github.com/clawdsign-creator/clawdsign" target="_blank" className="hover:text-red-600 transition-colors">GitHub</a>
+                                <a href="https://x.com/YOUR_TWITTER_HANDLE" target="_blank" className="hover:text-red-600 transition-colors">Twitter/X</a>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
         };
 
         ReactDOM.render(<Gallery />, document.getElementById('root'));
