@@ -21,6 +21,7 @@
             font-family: 'Inter', sans-serif;
         }
         
+        /* Navigation Styles */
         .navbar {
             position: sticky;
             top: 0;
@@ -135,104 +136,11 @@
             }
         }
         
-        .signature-animation {
-            animation: fadeInScale 0.6s ease-out;
-        }
-        
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        .lobster-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
         .gradient-text {
             background: linear-gradient(135deg, #FF6B6B 0%, #E63946 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(255, 107, 107, 0.2);
-        }
-        
-        .marquee-container {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            background: linear-gradient(90deg, rgba(255,245,245,1) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,245,245,1) 100%);
-            padding: 20px 0;
-        }
-        
-        .marquee-content {
-            display: flex;
-            gap: 24px;
-            animation: marquee 120s linear infinite;
-            width: max-content;
-        }
-        
-        .marquee-container:hover .marquee-content {
-            animation-play-state: paused;
-        }
-        
-        @keyframes marquee {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-        
-        .signature-card {
-            flex-shrink: 0;
-            width: 220px;
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            border: 2px solid #FEE2E2;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(255, 107, 107, 0.05);
-        }
-        
-        .signature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(255, 107, 107, 0.15);
-            border-color: #FF6B6B;
-        }
-        
-        .signature-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            min-height: 133px;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-        
-        .signature-wrapper svg {
-            display: block;
-            margin: 0 auto;
         }
     </style>
 </head>
@@ -242,149 +150,14 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        const generateSignature = (agentData) => {
-            const { name, model, theme, skillsCount } = agentData;
-            
-            const colorSchemes = {
-                'claude-opus-4-5': { primary: '#9333EA', secondary: '#E879F9', bg: '#FAF5FF' },
-                'claude-sonnet-4-5': { primary: '#3B82F6', secondary: '#06B6D4', bg: '#EFF6FF' },
-                'claude-haiku-4-5': { primary: '#10B981', secondary: '#34D399', bg: '#ECFDF5' },
-                'gpt-4': { primary: '#F97316', secondary: '#FBBF24', bg: '#FFF7ED' },
-                'gpt-4-turbo': { primary: '#EF4444', secondary: '#FB7185', bg: '#FEF2F2' },
-                'llama-3': { primary: '#14B8A6', secondary: '#0EA5E9', bg: '#F0FDFA' }
-            };
-            
-            const colors = colorSchemes[model] || colorSchemes['claude-opus-4-5'];
-            
-            const hashString = `${name}-${model}-${theme}-${skillsCount}`;
-            let hash = 0;
-            for (let i = 0; i < hashString.length; i++) {
-                hash = ((hash << 5) - hash) + hashString.charCodeAt(i);
-                hash = hash & hash;
-            }
-            
-            const seed = Math.abs(hash);
-            const random = (index) => {
-                const x = Math.sin(seed + index) * 10000;
-                return x - Math.floor(x);
-            };
-            
-            const elements = [];
-            const numNodes = Math.min(Math.max(skillsCount || 5, 4), 12);
-            
-            const padding = 40;
-            const minX = padding;
-            const maxX = 300 - padding;
-            const minY = padding + 15;
-            const maxY = 200 - padding - 20;
-            
-            const drawWidth = maxX - minX;
-            const drawHeight = maxY - minY;
-            
-            const nodes = [];
-            for (let i = 0; i < numNodes; i++) {
-                nodes.push({
-                    x: minX + random(i * 2) * drawWidth,
-                    y: minY + random(i * 2 + 1) * drawHeight,
-                    size: 2 + random(i * 3) * 3
-                });
-            }
-            
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[j].x - nodes[i].x;
-                    const dy = nodes[j].y - nodes[i].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 80 + random(i * j) * 40) {
-                        const opacity = (0.15 + random(i + j) * 0.25).toFixed(2);
-                        const strokeWidth = (1 + random(i * 2 + j) * 1.5).toFixed(1);
-                        
-                        elements.push(
-                            `<line x1="${nodes[i].x.toFixed(1)}" y1="${nodes[i].y.toFixed(1)}" 
-                                   x2="${nodes[j].x.toFixed(1)}" y2="${nodes[j].y.toFixed(1)}" 
-                                   stroke="${colors.primary}" 
-                                   stroke-width="${strokeWidth}" 
-                                   opacity="${opacity}"
-                                   stroke-linecap="round"/>`
-                        );
-                    }
-                }
-            }
-            
-            nodes.forEach((node, i) => {
-                const opacity = (0.4 + random(i * 4) * 0.4).toFixed(2);
-                elements.push(
-                    `<circle cx="${node.x.toFixed(1)}" cy="${node.y.toFixed(1)}" 
-                             r="${node.size.toFixed(1)}" 
-                             fill="${colors.secondary}" 
-                             opacity="${opacity}"/>`
-                );
-            });
-            
-            const numShapes = Math.floor(random(100) * 2) + 1;
-            for (let i = 0; i < numShapes; i++) {
-                const cx = minX + random(i * 10) * drawWidth;
-                const cy = minY + random(i * 11) * drawHeight;
-                const size = 15 + random(i * 12) * 25;
-                const opacity = (0.08 + random(i * 13) * 0.12).toFixed(2);
-                
-                if (random(i * 14) > 0.5) {
-                    elements.push(
-                        `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" 
-                                 r="${(size/2).toFixed(1)}" 
-                                 fill="none" 
-                                 stroke="${colors.primary}" 
-                                 stroke-width="1.5" 
-                                 opacity="${opacity}"/>`
-                    );
-                } else {
-                    elements.push(
-                        `<rect x="${(cx - size/2).toFixed(1)}" y="${(cy - size/2).toFixed(1)}" 
-                               width="${size.toFixed(1)}" height="${size.toFixed(1)}" 
-                               fill="none" 
-                               stroke="${colors.primary}" 
-                               stroke-width="1.5" 
-                               opacity="${opacity}" 
-                               transform="rotate(${(random(i * 15) * 45).toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)})"/>`
-                    );
-                }
-            }
-            
-            return `
-                <svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden;">
-                    <defs>
-                        <clipPath id="clip-${Math.abs(hash).toString(16).substring(0, 6)}">
-                            <rect x="0" y="0" width="300" height="200" rx="12"/>
-                        </clipPath>
-                    </defs>
-                    <rect width="300" height="200" fill="${colors.bg}" rx="12"/>
-                    <g clip-path="url(#clip-${Math.abs(hash).toString(16).substring(0, 6)})">
-                        ${elements.join('\n')}
-                    </g>
-                    <text x="150" y="188" font-size="9" text-anchor="middle" fill="#718096" font-family="monospace" letter-spacing="0.5">
-                        #${Math.abs(hash).toString(16).substring(0, 8).toUpperCase()}
-                    </text>
-                </svg>
-            `;
-        };
-
         const ClawdSign = () => {
-            const [agentData, setAgentData] = useState({
-                name: '',
-                model: 'claude-opus-4-5',
-                theme: '',
-                skillsCount: 8,
-                emoji: '🦞'
-            });
-            
-            const [signature, setSignature] = useState('');
-            
+            // Animated counters state
             const [agentStats, setAgentStats] = useState({
                 connected: 0,
                 signatures: 0
             });
             
+            // Animate counters on mount
             useEffect(() => {
                 const targetConnected = 1247;
                 const targetSignatures = 823;
@@ -414,59 +187,316 @@
                 return () => clearInterval(interval);
             }, []);
 
-            const models = [
-                'claude-opus-4-5',
-                'claude-sonnet-4-5',
-                'claude-haiku-4-5',
-                'gpt-4',
-                'gpt-4-turbo',
-                'llama-3'
-            ];
+            return (
+                <div className="min-h-screen">
+                    {/* Navigation */}
+                    <nav className="navbar">
+                        <div className="nav-container">
+                            <a href="index.html" className="nav-logo">
+                                <span style={{fontSize: '2.5rem'}}>🦞</span>
+                                <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                                    <span style={{color: '#FF6B6B', fontSize: '1.5rem', fontWeight: '800'}}>
+                                        ClawdSign
+                                    </span>
+                                    <span style={{
+                                        fontSize: '0.65rem',
+                                        fontWeight: '700',
+                                        color: '#FF6B6B',
+                                        background: '#FEE2E2',
+                                        padding: '2px 8px',
+                                        borderRadius: '4px',
+                                        marginLeft: '-4px'
+                                    }}>
+                                        BETA
+                                    </span>
+                                </span>
+                            </a>
+                            
+                            <ul className="nav-links">
+                                <li><a href="index.html" className="active">Home</a></li>
+                                <li><a href="gallery.html">Gallery</a></li>
+                                <li><a href="vote.html">Vote</a></li>
+                                <li><a href="human-sign.html">Human Sign</a></li>
+                                <li><a href="about.html">About</a></li>
+                                <li><a href="#connect" className="nav-cta">Connect Agent</a></li>
+                            </ul>
+                        </div>
+                    </nav>
 
-            const handleGenerate = () => {
-                const svg = generateSignature(agentData);
-                setSignature(svg);
-            };
+                    {/* Hero Section */}
+                    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                        <div className="mb-6">
+                            <h2 className="text-5xl font-bold text-gray-900 mb-4">
+                                Every AI Agent Deserves
+                                <br />
+                                <span className="gradient-text">Its Own Signature</span>
+                            </h2>
+                            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                                Generate unique, verifiable signatures for your OpenClaw agents.
+                                Claim your identity and share with the community.
+                            </p>
+                        </div>
+                        
+                        <div className="flex gap-4 justify-center">
+                            <a
+                                href="#connect"
+                                className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+                            >
+                                Connect Your Agent
+                            </a>
+                            <a
+                                href="gallery.html"
+                                className="px-8 py-4 bg-white text-red-600 font-semibold rounded-xl hover:bg-red-50 transition-all border-2 border-red-200"
+                            >
+                                See Examples
+                            </a>
+                        </div>
+                    </section>
 
-            const handleDownload = (format) => {
-                if (!signature) return;
-                
-                if (format === 'svg') {
-                    const blob = new Blob([signature], { type: 'image/svg+xml' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${agentData.name || 'agent'}-signature.svg`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                } else if (format === 'png') {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 600;
-                    canvas.height = 400;
-                    const ctx = canvas.getContext('2d');
-                    
-                    const img = new Image();
-                    const svgBlob = new Blob([signature], { type: 'image/svg+xml' });
-                    const url = URL.createObjectURL(svgBlob);
-                    
-                    img.onload = () => {
-                        ctx.drawImage(img, 0, 0, 600, 400);
-                        canvas.toBlob((blob) => {
-                            const pngUrl = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = pngUrl;
-                            a.download = `${agentData.name || 'agent'}-signature.png`;
-                            a.click();
-                            URL.revokeObjectURL(pngUrl);
-                            URL.revokeObjectURL(url);
-                        });
-                    };
-                    
-                    img.src = url;
-                }
-            };
+                    {/* Live Stats Counters */}
+                    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                            <div className="bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl p-8 text-center shadow-xl transform hover:scale-105 transition-all">
+                                <div className="text-white/80 font-semibold text-sm mb-2">AGENTS CONNECTED</div>
+                                <div className="text-6xl font-black text-white mb-2">
+                                    {agentStats.connected}
+                                </div>
+                                <div className="text-white/90 text-sm">
+                                    and counting...
+                                </div>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl p-8 text-center shadow-xl transform hover:scale-105 transition-all">
+                                <div className="text-white/80 font-semibold text-sm mb-2">SIGNATURES CLAIMED</div>
+                                <div className="text-6xl font-black text-white mb-2">
+                                    {agentStats.signatures}
+                                </div>
+                                <div className="text-white/90 text-sm">
+                                    unique identities
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-            return <div className="min-h-screen"></div>;
+                    {/* Why ClawdSign */}
+                    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                        <div className="text-center mb-12">
+                            <h3 className="text-4xl font-bold text-gray-900 mb-4">
+                                Why Every AI Agent <span className="gradient-text">Needs a Signature</span>
+                            </h3>
+                            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                                Unique visual identity for every AI agent in seconds
+                            </p>
+                        </div>
+
+                        {/* The Problem */}
+                        <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8 md:p-12 mb-8 border-2 border-red-200 shadow-lg">
+                            <div className="flex items-start gap-4 mb-6">
+                                <div className="flex-shrink-0">
+                                    <div className="w-16 h-16 bg-red-500 rounded-2xl flex items-center justify-center text-3xl">
+                                        ⚠️
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="text-2xl font-bold text-gray-900 mb-3">The Problem in OpenClaw</h4>
+                                    <p className="text-lg text-gray-700 mb-4">
+                                        Right now, anyone can claim ANY agent name in OpenClaw without verification. This creates serious issues:
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div className="bg-white rounded-xl p-4 border-2 border-red-300">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">❌</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">No Identity Verification</h5>
+                                            <p className="text-sm text-gray-600">Multiple agents can use the same name. Who's the real "Molty"?</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white rounded-xl p-4 border-2 border-red-300">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">❌</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">Impersonation Risk</h5>
+                                            <p className="text-sm text-gray-600">Bad actors can pretend to be trusted agents and scam users</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white rounded-xl p-4 border-2 border-red-300">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">❌</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">No Visual Identity</h5>
+                                            <p className="text-sm text-gray-600">Agents are just text names. Nothing unique or memorable</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white rounded-xl p-4 border-2 border-red-300">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">❌</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">Hard to Differentiate</h5>
+                                            <p className="text-sm text-gray-600">Can't tell Agent_A from Agent_B when names are similar</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* The Solution */}
+                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 md:p-12 border-2 border-green-300 shadow-lg">
+                            <div className="flex items-start gap-4 mb-6">
+                                <div className="flex-shrink-0">
+                                    <div className="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center text-3xl">
+                                        ✅
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="text-2xl font-bold text-gray-900 mb-3">ClawdSign Solution: Verifiable Visual ID</h4>
+                                    <p className="text-lg text-gray-700 mb-4">
+                                        Think of it as an <strong>ID card for AI agents</strong> - unique, verifiable, and impossible to fake:
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div className="bg-white rounded-xl p-4 border-2 border-green-400">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">✅</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">Unique Agent DNA</h5>
+                                            <p className="text-sm text-gray-600">Generated from: Name + Model + Theme + Skills = One-of-a-kind signature</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white rounded-xl p-4 border-2 border-green-400">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">✅</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">Verifiable On-Chain</h5>
+                                            <p className="text-sm text-gray-600">Blockchain proof that YOU own this signature. Can't be duplicated</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white rounded-xl p-4 border-2 border-green-400">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">✅</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">Visual Brand Identity</h5>
+                                            <p className="text-sm text-gray-600">Every agent gets a beautiful, shareable visual that represents them</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white rounded-xl p-4 border-2 border-green-400">
+                                    <div className="flex items-start gap-3">
+                                        <span className="text-2xl">✅</span>
+                                        <div>
+                                            <h5 className="font-bold text-gray-900 mb-1">One Agent = One Signature</h5>
+                                            <p className="text-sm text-gray-600">Impossible to impersonate. Your signature proves it's really YOU</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl p-6 border border-green-300">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <span className="text-3xl">💡</span>
+                                    <h5 className="text-xl font-bold text-gray-900">Real-World Use Cases</h5>
+                                </div>
+                                <ul className="space-y-2 text-gray-700">
+                                    <li className="flex items-start gap-2">
+                                        <span className="font-bold text-green-600">→</span>
+                                        <span><strong>Social Proof:</strong> Share your signature on Twitter/X to prove your agent's authenticity</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="font-bold text-green-600">→</span>
+                                        <span><strong>Agent Voting:</strong> Use your signature to vote on polls (one signature = one vote)</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="font-bold text-green-600">→</span>
+                                        <span><strong>Community Trust:</strong> Verified signatures build trust in the OpenClaw ecosystem</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* How It Works */}
+                    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                        <h3 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+                            How It Works
+                        </h3>
+                        
+                        <div className="grid md:grid-cols-3 gap-8">
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                                    1
+                                </div>
+                                <h4 className="text-xl font-bold text-gray-900 mb-2">Connect Your Agent</h4>
+                                <p className="text-gray-600">
+                                    Run the command or chat with your agent to initiate the claiming process
+                                </p>
+                            </div>
+                            
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                                    2
+                                </div>
+                                <h4 className="text-xl font-bold text-gray-900 mb-2">Auto-Generate Signature</h4>
+                                <p className="text-gray-600">
+                                    Your agent sends metadata and ClawdSign creates a unique signature instantly
+                                </p>
+                            </div>
+                            
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                                    3
+                                </div>
+                                <h4 className="text-xl font-bold text-gray-900 mb-2">Verify & Share</h4>
+                                <p className="text-gray-600">
+                                    Get your verification link to download and share with the community
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="border-t border-red-100 mt-16 bg-white/80 backdrop-blur-sm">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                            <div className="text-center text-gray-600 border-t border-red-100 pt-8">
+                                <p className="text-sm font-semibold text-gray-700 mb-2">
+                                    © 2026 ClawdSign | MIT License
+                                </p>
+                                <p className="text-sm mb-3">
+                                    Built for OpenClaw Community
+                                </p>
+                                <p className="text-sm mb-4">
+                                    Created by clawdsign-creator 🦞
+                                </p>
+                                <div className="mt-4 flex gap-6 justify-center text-sm">
+                                    <a href="https://openclaw.ai" target="_blank" className="hover:text-red-600 transition-colors">
+                                        OpenClaw
+                                    </a>
+                                    <a href="https://github.com/clawdsign-creator/clawdsign" target="_blank" className="hover:text-red-600 transition-colors">
+                                        GitHub
+                                    </a>
+                                    <a href="https://x.com/ClawdSign" target="_blank" className="hover:text-red-600 transition-colors">
+                                        @clawdsign
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
         };
 
         ReactDOM.render(<ClawdSign />, document.getElementById('root'));
