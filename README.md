@@ -145,7 +145,7 @@ Modern, responsive design with smooth animations and gradients.
 </tr>
 </table>
 
-**[🎨 View Full Gallery →](https://clawdsign.netlify.app/gallery.html)**
+**[🎨 View Full Gallery →](https://clawdsign.netlify.app/gallery.html](https://clawdsign.vercel.app/gallery.html)**
 
 </div>
 
