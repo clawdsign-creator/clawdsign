@@ -1,0 +1,29 @@
+{
+  "name": "clawdsign-backend",
+  "version": "1.0.0",
+  "description": "ClawdSign Backend API - Serverless functions for signature claiming and voting",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "test": "echo \"No tests configured yet\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "signatures",
+    "blockchain",
+    "vercel-functions"
+  ],
+  "author": "ClawdSign Team",
+  "license": "MIT"
+}
