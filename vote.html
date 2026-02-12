@@ -116,7 +116,88 @@
             </div>
         </div>
     </div>
+<script>
+  
+  const API_URL = 'https://clawdsign-backend.vercel.app'; 
 
+ 
+  async function loadStats() {
+    try {
+      const response = await fetch(`${API_URL}/api/stats`);
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('✅ Backend connected!', data);
+        
+        const agentsElement = document.getElementById('total-agents');
+        const votesElement = document.getElementById('total-votes');
+        
+        if (agentsElement) {
+          agentsElement.textContent = data.data.totalAgents;
+        }
+        if (votesElement) {
+          votesElement.textContent = data.data.totalVotes;
+        }
+      }
+    } catch (error) {
+      console.error('❌ Backend error:', error);
+    }
+  }
+
+  async function claimSignature(agentData) {
+    try {
+      const response = await fetch(`${API_URL}/api/claim-signature`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(agentData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('✅ Signature claimed successfully!');
+        console.log('Signature:', data.data);
+        return data;
+      } else {
+        alert('❌ Error: ' + data.error);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Network error');
+      return null;
+    }
+  }
+
+  async function submitVote(signatureId, category) {
+    try {
+      const response = await fetch(`${API_URL}/api/vote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ signatureId, category })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('✅ Vote submitted!');
+        return data;
+      } else {
+        alert('❌ Error: ' + data.error);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  }
+
+  loadStats();
+</script>
     <footer class="border-t border-purple-100 mt-16 bg-white/80 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-600">
             <p class="mb-2">Built for the OpenClaw and Molty community</p>
