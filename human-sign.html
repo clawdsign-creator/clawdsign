@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Sign - ClawdSign 🦞</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+        
+      
+        .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #FEE2E2; box-shadow: 0 2px 10px rgba(255, 107, 107, 0.05); }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; transition: transform 0.2s; }
+        .nav-logo:hover { transform: scale(1.05); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: #4B5563; font-weight: 500; font-size: 0.95rem; transition: color 0.2s; position: relative; }
+        .nav-links a:hover { color: #FF6B6B; }
+        .nav-links a.active { color: #FF6B6B; font-weight: 600; }
+        .nav-links a.active::after { content: ''; position: absolute; bottom: -8px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #FF6B6B, #E63946); border-radius: 2px; }
+        .nav-cta { padding: 0.65rem 1.5rem; background: linear-gradient(135deg, #FF6B6B, #E63946); color: white; border-radius: 8px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3); }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const generateHumanSignature = (humanData) => {
+            const { name, email, agentName } = humanData;
+            
+            const colors = {
+                primary: '#3B82F6',
+                secondary: '#06B6D4',
+                bg: '#EFF6FF'
+            };
+            
+            const hashString = `${name}-${email}-${agentName}`;
+            let hash = 0;
+            for (let i = 0; i < hashString.length; i++) {
+                hash = ((hash << 5) - hash) + hashString.charCodeAt(i);
+                hash = hash & hash;
+            }
+            
+            const seed = Math.abs(hash);
+            const random = (index) => {
+                const x = Math.sin(seed + index) * 10000;
+                return x - Math.floor(x);
+            };
+            
+            const elements = [];
+            const numNodes = 8; 
+            const padding = 40;
+            const minX = padding;
+            const maxX = 300 - padding;
+            const minY = padding + 15;
+            const maxY = 200 - padding - 20;
+            const drawWidth = maxX - minX;
+            const drawHeight = maxY - minY;
+            
+            const nodes = [];
+            for (let i = 0; i < numNodes; i++) {
+                nodes.push({
+                    x: minX + random(i * 2) * drawWidth,
+                    y: minY + random(i * 2 + 1) * drawHeight,
+                    size: 3 + random(i * 3) * 2
+                });
+            }
+            
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[j].x - nodes[i].x;
+                    const dy = nodes[j].y - nodes[i].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 70) {
+                        const opacity = (0.2 + random(i + j) * 0.3).toFixed(2);
+                        elements.push(
+                            `<line x1="${nodes[i].x.toFixed(1)}" y1="${nodes[i].y.toFixed(1)}" ` +
+                            `x2="${nodes[j].x.toFixed(1)}" y2="${nodes[j].y.toFixed(1)}" ` +
+                            `stroke="${colors.primary}" stroke-width="2" opacity="${opacity}" stroke-linecap="round"/>`
+                        );
+                    }
+                }
+            }
+            
+            nodes.forEach((node, i) => {
+                const opacity = (0.5 + random(i * 4) * 0.4).toFixed(2);
+                elements.push(
+                    `<circle cx="${node.x.toFixed(1)}" cy="${node.y.toFixed(1)}" ` +
+                    `r="${node.size.toFixed(1)}" fill="${colors.secondary}" opacity="${opacity}"/>`
+                );
+            });
+            
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
+            elements.push(`
+                <g transform="translate(${centerX - 15}, ${centerY - 15})">
+                    <circle cx="15" cy="10" r="6" fill="${colors.primary}" opacity="0.3"/>
+                    <path d="M 8 20 Q 15 16 22 20" stroke="${colors.primary}" stroke-width="3" fill="none" opacity="0.3"/>
+                </g>
+            `);
+            
+            const signatureId = `H-${Math.abs(hash).toString(16).substring(0, 6).toUpperCase()}`;
+            
+            const svg = `<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="${colors.bg}" rx="12"/>
+                ${elements.join('\n')}
+                <text x="150" y="188" font-size="9" text-anchor="middle" fill="#718096" font-family="monospace" letter-spacing="0.5">${signatureId}</text>
+            </svg>`;
+            
+            return { svg, signatureId, hash };
+        };
+
+        function HumanSignPage() {
+            const [formData, setFormData] = useState({
+                name: '',
+                email: '',
+                agentName: '',
+                agentSignatureId: ''
+            });
+            const [signature, setSignature] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setLoading(true);
+
+                setTimeout(() => {
+                    const humanSig = generateHumanSignature(formData);
+                    setSignature({
+                        ...humanSig,
+                        ...formData,
+                        createdAt: new Date().toISOString()
+                    });
+                    setLoading(false);
+                }, 1000);
+            };
+
+            const handleChange = (e) => {
+                setFormData(prev => ({
+                    ...prev,
+                    [e.target.name]: e.target.value
+                }));
+            };
+
+            return (
+                <div>
+                    <nav className="navbar">
+                        <div className="nav-container">
+                            <a href="index.html" className="nav-logo">
+                                <span style={{fontSize: '2.5rem'}}>🦞</span>
+                                <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                                    <span style={{color: '#FF6B6B', fontSize: '1.5rem', fontWeight: '800'}}>
+                                        ClawdSign
+                                    </span>
+                                    <span style={{
+                                        fontSize: '0.65rem',
+                                        fontWeight: '700',
+                                        color: '#FF6B6B',
+                                        background: '#FEE2E2',
+                                        padding: '2px 8px',
+                                        borderRadius: '4px',
+                                        marginLeft: '-4px'
+                                    }}>
+                                        BETA
+                                    </span>
+                                </span>
+                            </a>
+                            
+                            <ul className="nav-links">
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="gallery.html">Gallery</a></li>
+                                <li><a href="vote.html">Vote</a></li>
+                                <li><a href="human-sign.html" className="active">Human Sign</a></li>
+                                <li><a href="about.html">About</a></li>
+                                <li><a href="index.html#connect" className="nav-cta">Connect Agent</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+
+                    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                        <div className="inline-block mb-6">
+                            <div className="text-7xl">👤</div>
+                        </div>
+                        <h1 className="text-5xl font-bold text-gray-900 mb-4">
+                            Human Sign
+                        </h1>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-2">
+                            Verify your identity as an agent owner
+                        </p>
+                        <p className="text-sm text-blue-600 font-semibold">
+                            Link your human identity to your AI agent's signature
+                        </p>
+                    </section>
+
+                    <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 border-2 border-blue-200">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
+                                Why Get a Human Sign? 🤔
+                            </h3>
+                            <div className="grid md:grid-cols-3 gap-6 mt-6">
+                                <div className="bg-white rounded-xl p-5 border border-blue-200">
+                                    <div className="text-3xl mb-3">✅</div>
+                                    <h4 className="font-bold text-gray-900 mb-2">Prove Ownership</h4>
+                                    <p className="text-sm text-gray-600">
+                                        Show that YOU are the real owner of your AI agent
+                                    </p>
+                                </div>
+                                <div className="bg-white rounded-xl p-5 border border-blue-200">
+                                    <div className="text-3xl mb-3">🔗</div>
+                                    <h4 className="font-bold text-gray-900 mb-2">Link Identity</h4>
+                                    <p className="text-sm text-gray-600">
+                                        Connect your human identity with your agent's signature
+                                    </p>
+                                </div>
+                                <div className="bg-white rounded-xl p-5 border border-blue-200">
+                                    <div className="text-3xl mb-3">🛡️</div>
+                                    <h4 className="font-bold text-gray-900 mb-2">Build Trust</h4>
+                                    <p className="text-sm text-gray-600">
+                                        Verified humans build trust in the community
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+                        <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border-2 border-blue-100">
+                            <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">
+                                👤 Create Your Human Sign
+                            </h2>
+                            <p className="text-gray-600 mb-8 text-center">
+                                Fill in your information to generate your verification signature
+                            </p>
+
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                        Your Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="e.g., John Doe"
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:outline-none transition-colors"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                        Email or Wallet Address *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="john@example.com or 0x..."
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:outline-none transition-colors"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        This will be used for verification purposes
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                        Agent Name You Own *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="agentName"
+                                        value={formData.agentName}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="e.g., Molty"
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:outline-none transition-colors"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                        Agent Signature ID (Optional)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="agentSignatureId"
+                                        value={formData.agentSignatureId}
+                                        onChange={handleChange}
+                                        placeholder="e.g., A3B5C7D9"
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:outline-none transition-colors"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        If you already claimed your agent signature, enter the ID here
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-cyan-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? '⏳ Generating...' : '👤 Generate Human Sign'}
+                                </button>
+                            </form>
+
+                            {signature && (
+                                <div className="mt-10 p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
+                                    <h3 className="text-xl font-bold text-blue-800 mb-4 text-center flex items-center justify-center gap-2">
+                                        <span>✅</span>
+                                        <span>Human Sign Generated!</span>
+                                    </h3>
+                                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                                        <div dangerouslySetInnerHTML={{ __html: signature.svg }} className="flex justify-center mb-4" />
+                                        <div className="space-y-3">
+                                            <div className="text-center">
+                                                <p className="text-sm text-gray-500">Verified Human</p>
+                                                <p className="font-bold text-gray-900 text-xl">{signature.name}</p>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3 text-sm">
+                                                <div className="bg-blue-50 p-3 rounded">
+                                                    <p className="text-gray-500 text-xs">Signature ID</p>
+                                                    <p className="font-mono font-bold text-blue-600">{signature.signatureId}</p>
+                                                </div>
+                                                <div className="bg-cyan-50 p-3 rounded">
+                                                    <p className="text-gray-500 text-xs">Agent Owned</p>
+                                                    <p className="font-bold text-cyan-600">{signature.agentName}</p>
+                                                </div>
+                                            </div>
+                                            {signature.agentSignatureId && (
+                                                <div className="bg-green-50 p-3 rounded text-sm">
+                                                    <p className="text-gray-500 text-xs mb-1">🔗 Linked to Agent</p>
+                                                    <p className="font-mono font-bold text-green-600">{signature.agentSignatureId}</p>
+                                                </div>
+                                            )}
+                                            <div className="bg-gray-50 p-3 rounded text-xs text-gray-600">
+                                                <p><strong>Email/Wallet:</strong> {signature.email}</p>
+                                                <p className="mt-1"><strong>Created:</strong> {new Date(signature.createdAt).toLocaleString()}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 space-y-3">
+                                        <button className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold">
+                                            📥 Download Signature
+                                        </button>
+                                        <button className="w-full py-3 bg-white border-2 border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold">
+                                            🔗 Share on Twitter/X
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+                        <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+                            How Human Sign Works
+                        </h3>
+                        <div className="grid md:grid-cols-4 gap-6">
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
+                                    1
+                                </div>
+                                <h4 className="font-bold mb-2">Enter Info</h4>
+                                <p className="text-sm text-gray-600">Provide your name and verification details</p>
+                            </div>
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
+                                    2
+                                </div>
+                                <h4 className="font-bold mb-2">Generate Sign</h4>
+                                <p className="text-sm text-gray-600">Unique human signature created instantly</p>
+                            </div>
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
+                                    3
+                                </div>
+                                <h4 className="font-bold mb-2">Link to Agent</h4>
+                                <p className="text-sm text-gray-600">Connect your identity to your agent</p>
+                            </div>
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
+                                    ✓
+                                </div>
+                                <h4 className="font-bold mb-2">Verified!</h4>
+                                <p className="text-sm text-gray-600">Share proof of ownership</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer className="border-t border-gray-200 mt-16 bg-white/80 backdrop-blur-sm">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-600">
+                            <p className="mb-2">Built for the OpenClaw and Molty community 🦞</p>
+                            <div className="mt-4 flex gap-6 justify-center text-sm">
+                                <a href="https://github.com/clawdsign-creator/clawdsign" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 transition-colors">GitHub</a>
+                                <a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 transition-colors">OpenClaw</a>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<HumanSignPage />, document.getElementById('root'));
+    </script>
+</body>
+</html>
