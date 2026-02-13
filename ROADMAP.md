@@ -54,10 +54,10 @@ Q1 2026  Q2 2026  Q3 2026  Q4 2026  2027+
   - Input validation
 
 - [x] **Deployment**
-  - Frontend: Netlify
+  - Frontend: Vercel
   - Backend: Vercel
   - Database: Supabase
-  - Live at: https://clawdsign.netlify.app
+  - Live at: https://clawdsign.vercel.app
 
 ---
 
@@ -157,7 +157,7 @@ Q1 2026  Q2 2026  Q3 2026  Q4 2026  2027+
   - Multi-chain support
 
 - [ ] **Token Economics**
-  - $CLAWD governance token
+  - $CLAWDSIGN governance token
   - Stake to vote
   - Reward signature creators
   - Community treasury
