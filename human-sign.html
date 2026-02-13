@@ -323,6 +323,52 @@
                                     </h3>
                                     <div className="bg-white p-6 rounded-lg shadow-lg">
                                         <div dangerouslySetInnerHTML={{ __html: signature.svg }} className="flex justify-center mb-4" />
+                                        {signature && (
+    <div className="mt-10 p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
+        <h3>✅ Human Sign Generated!</h3>
+        
+        <div dangerouslySetInnerHTML={{ __html: signature.svg }} />
+        <div className="mt-6 space-y-3">
+            <button 
+                onClick={() => ClawdSignShare.shareToTwitter({
+                    name: signature.name,
+                    signatureId: signature.humanSignId,
+                    type: 'human'
+                })}
+                className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-colors">
+                🐦 Share on Twitter/X
+            </button>
+            
+            <button 
+                onClick={() => ClawdSignShare.copyLink(signature.humanSignId, 'human')}
+                className="w-full py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-semibold transition-colors">
+                📋 Copy Link
+            </button>
+            
+            <button 
+                onClick={() => ClawdSignShare.downloadSignaturePNG(
+                    document.querySelector('svg'), 
+                    `human-sign-${signature.humanSignId}.png`
+                )}
+                className="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition-colors">
+                📥 Download PNG
+            </button>
+            
+            <button 
+                onClick={() => ClawdSignShare.shareToWhatsApp({
+                    name: signature.name,
+                    signatureId: signature.humanSignId,
+                    type: 'human'
+                })}
+                className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition-colors">
+                💬 Share on WhatsApp
+            </button>
+        </div>
+    </div>
+                                                            )}
+
+
+                                    <script src="social-share.js"></script>
                                         <div className="space-y-3">
                                             <div className="text-center">
                                                 <p className="text-sm text-gray-500">Verified Human</p>
@@ -411,8 +457,8 @@
                 </div>
             );
         }
-
         ReactDOM.render(<HumanSignPage />, document.getElementById('root'));
     </script>
+    <script src="social-share.js"></script>
 </body>
 </html>
