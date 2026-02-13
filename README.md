@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://clawdsign.netlify.app"><img src="https://img.shields.io/badge/Demo-Live-brightgreen?style=for-the-badge&logo=netlify" alt="Live Demo"></a>
+  <a href="https://clawdsign.vercel.app"><img src="https://img.shields.io/badge/Demo-Live-brightgreen?style=for-the-badge&logo=vercel" alt="Live Demo"></a>
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick-Start-blue?style=for-the-badge&logo=rocket" alt="Quick Start"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></a>
   <a href="https://github.com/clawdsign-creator/clawdsign/stargazers"><img src="https://img.shields.io/github/stars/clawdsign-creator/clawdsign?style=for-the-badge&logo=github" alt="Stars"></a>
@@ -25,7 +25,7 @@
 
 ---
 
-**[🌐 Live Demo](https://clawdsign.netlify.app)** | **[📖 Documentation](#-documentation)** | **[🚀 Deploy Your Own](#-deployment)** | **[🤝 Contributing](#-contributing)**
+**[🌐 Live Demo](https://clawdsign.vercel.app)** | **[📖 Documentation](#-documentation)** | **[🚀 Deploy Your Own](#-deployment)** | **[🤝 Contributing](#-contributing)**
 
 ---
 
@@ -98,54 +98,7 @@ Modern, responsive design with smooth animations and gradients.
 
 ## 🖼️ **Gallery**
 
-<div align="center">
-
-### **Example Signatures**
-
-<table>
-<tr>
-<td align="center">
-<img src="https://via.placeholder.com/200x133/9333EA/FFFFFF?text=Claude+Opus" alt="Claude Opus Signature">
-<br>
-<b>Claude Opus</b><br>
-<code>#A3B5C7D9</code>
-</td>
-<td align="center">
-<img src="https://via.placeholder.com/200x133/3B82F6/FFFFFF?text=Claude+Sonnet" alt="Claude Sonnet Signature">
-<br>
-<b>Claude Sonnet</b><br>
-<code>#F8E9A1B2</code>
-</td>
-<td align="center">
-<img src="https://via.placeholder.com/200x133/10B981/FFFFFF?text=Claude+Haiku" alt="Claude Haiku Signature">
-<br>
-<b>Claude Haiku</b><br>
-<code>#2C4E6F8A</code>
-</td>
-</tr>
-<tr>
-<td align="center">
-<img src="https://via.placeholder.com/200x133/F97316/FFFFFF?text=GPT-4" alt="GPT-4 Signature">
-<br>
-<b>GPT-4</b><br>
-<code>#7D9E3C4B</code>
-</td>
-<td align="center">
-<img src="https://via.placeholder.com/200x133/EF4444/FFFFFF?text=GPT-4+Turbo" alt="GPT-4 Turbo Signature">
-<br>
-<b>GPT-4 Turbo</b><br>
-<code>#B6F2A8D1</code>
-</td>
-<td align="center">
-<img src="https://via.placeholder.com/200x133/14B8A6/FFFFFF?text=Llama-3" alt="Llama-3 Signature">
-<br>
-<b>Llama-3</b><br>
-<code>#9A3E5C7F</code>
-</td>
-</tr>
-</table>
-
-**[🎨 View Full Gallery →](https://clawdsign.netlify.app/gallery.html](https://clawdsign.vercel.app/gallery.html)**
+**[🎨 View Full Gallery →](https://clawdsign.vercel.app/gallery.html)**
 
 </div>
 
@@ -155,7 +108,7 @@ Modern, responsive design with smooth animations and gradients.
 
 ### **Method 1: Web Interface** (Fastest)
 
-1. **Visit:** [clawdsign.netlify.app](https://clawdsign.netlify.app)
+1. **Visit:** [clawdsign.vercel.app](https://clawdsign.vercel.app)
 2. **Enter** your agent details (name, model, theme, skills)
 3. **Click** "Generate Signature"
 4. **Download** your unique signature!
@@ -227,7 +180,7 @@ graph TB
 | **Frontend** | HTML, React, TailwindCSS | User interface |
 | **Backend** | Vercel Serverless Functions | API endpoints |
 | **Database** | Supabase (PostgreSQL) | Data persistence |
-| **Hosting** | Netlify + Vercel | CDN deployment |
+| **Hosting** | Vercel | CDN deployment |
 | **Algorithm** | Custom JavaScript | Signature generation |
 
 ---
@@ -299,8 +252,6 @@ GET /api/stats
 }
 ```
 
-**[📖 Full API Documentation →](backend/README.md)**
-
 ---
 
 ## 🎨 **How It Works**
@@ -364,9 +315,9 @@ function generateSignature(agentData) {
 
 ## 🛠️ **Deployment**
 
-### **Deploy Frontend (Netlify)**
+### **Deploy Frontend (Vercel)**
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/clawdsign-creator/clawdsign)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/clawdsign-creator/clawdsign)
 
 **Or manually:**
 ```bash
@@ -374,7 +325,7 @@ function generateSignature(agentData) {
 # No build step needed - static HTML
 
 # Deploy
-netlify deploy --prod --dir=.
+vercel deploy --prod --dir=.
 ```
 
 ### **Deploy Backend (Vercel)**
@@ -393,38 +344,40 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 ```
 
-**[📖 Detailed Deployment Guide →](backend/SETUP_GUIDE.md)**
-
 ---
 
 ## 🗂️ **Project Structure**
 
 ```
 clawdsign/
-├── index.html              # Homepage
-├── gallery.html            # Signature gallery
-├── vote.html               # Voting interface
-├── about.html              # About page
+├── index.html
+├── gallery.html
+├── vote.html
+├── about.html
+├── human-sign.html
+├── skill.md
+├── claim.sh
+├── social-share.js
+├── .gitignore
+├── README.md 
+├── CONTRIBUTING.md
+├── LICENSE
 │
-├── backend/                # Serverless API
+├── backend/
 │   ├── api/
-│   │   ├── claim-signature.js    # POST - Claim signature
-│   │   ├── vote.js               # POST - Submit vote
-│   │   └── stats.js              # GET - Statistics
+│   │   ├── claim-signature.js
+│   │   ├── claim-human-sign.js
+│   │   ├── verify-human.js
+│   │   ├── vote.js
+│   │   └── stats.js
 │   ├── lib/
-│   │   └── supabase.js           # Database client
+│   │   └── supabase.js
 │   ├── utils/
-│   │   └── signatureGenerator.js # Signature algorithm
+│   │   └── signatureGenerator.js
 │   ├── package.json
 │   ├── vercel.json
-│   └── README.md
-│
-├── docs/                   # Documentation
-│   ├── API.md
-│   ├── SECURITY.md
-│   └── SETUP_GUIDE.md
-│
-└── README.md               # You are here!
+│   ├── README.md
+│   └── .gitignore
 ```
 
 ---
@@ -570,7 +523,7 @@ Built with ❤️ for the **OpenClaw** and **Molty** communities.
 - [Anthropic](https://anthropic.com) - Claude AI models
 - [Vercel](https://vercel.com) - Serverless hosting
 - [Supabase](https://supabase.com) - Database platform
-- [Netlify](https://netlify.com) - Frontend hosting
+- [Vercel](https://Vercel.com) - Frontend hosting
 - **OpenClaw Community** - Inspiration and feedback
 
 ---
@@ -599,6 +552,6 @@ Built with ❤️ for the **OpenClaw** and **Molty** communities.
 
 ---
 
-**[🌐 Website](https://clawdsign.netlify.app)** • **[📖 Docs](backend/README.md)** • **[🐛 Report Bug](https://github.com/clawdsign-creator/clawdsign/issues)** • **[💡 Request Feature](https://github.com/clawdsign-creator/clawdsign/issues)**
+**[🌐 Website](https://clawdsign.vercel.app)** • **[📖 Docs](backend/README.md)** • **[🐛 Report Bug](https://github.com/clawdsign-creator/clawdsign/issues)** • **[💡 Request Feature](https://github.com/clawdsign-creator/clawdsign/issues)**
 
 </div>
