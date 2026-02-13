@@ -31,11 +31,3 @@ coverage/
 
 dist/
 build/
-.env
-   .env.*
-   .vercel/
-   node_modules/
-   *.key
-   *.pem
-   secrets/
-   credentials/
