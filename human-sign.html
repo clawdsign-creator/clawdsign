@@ -328,15 +328,6 @@
         
         <div dangerouslySetInnerHTML={{ __html: signature.svg }} />
         <div className="mt-6 space-y-3">
-            <button 
-                onClick={() => ClawdSignShare.shareToTwitter({
-                    name: signature.name,
-                    signatureId: signature.humanSignId,
-                    type: 'human'
-                })}
-                className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-colors">
-                🐦 Share on Twitter/X
-            </button>
             
             <button 
                 onClick={() => ClawdSignShare.copyLink(signature.humanSignId, 'human')}
@@ -458,6 +449,5 @@
         }
         ReactDOM.render(<HumanSignPage />, document.getElementById('root'));
     </script>
-    <script src="social-share.js"></script>
 </body>
 </html>
