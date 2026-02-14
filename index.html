@@ -924,16 +924,6 @@
                                             <p className="text-xs text-gray-500">{example.model}</p>
                                             <p className="text-xs text-gray-400 mt-1">{example.theme}</p>
                                         </div>
-                                         <button 
-                                                onClick={() => ClawdSignShare.shareToTwitter({
-                                                name: example.name,
-                                                signatureId: 'DEMO-' + idx,
-                                                model: example.model,
-                                                type: 'agent'
-                                                    })}
-                                                className="mt-3 w-full px-3 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors font-semibold">
-                                                🐦 Share Example
-                                                </button>
                                     </div>
                                 ))}
                                 {exampleSignatures.map((example, idx) => (
