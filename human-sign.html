@@ -315,87 +315,91 @@
                             </form>
 
                             {signature && (
-                                <div className="mt-10 p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
-                                    <h3 className="text-xl font-bold text-blue-800 mb-4 text-center flex items-center justify-center gap-2">
-                                        <span>✅</span>
-                                        <span>Human Sign Generated!</span>
-                                    </h3>
-                                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                                        <div dangerouslySetInnerHTML={{ __html: signature.svg }} className="flex justify-center mb-4" />
-                                        {signature && (
     <div className="mt-10 p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
-        <h3>✅ Human Sign Generated!</h3>
+        <h3 className="text-xl font-bold text-blue-800 mb-4 text-center flex items-center justify-center gap-2">
+            <span>✅</span>
+            <span>Human Sign Generated!</span>
+        </h3>
         
-        <div dangerouslySetInnerHTML={{ __html: signature.svg }} />
-        <div className="mt-6 space-y-3">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div dangerouslySetInnerHTML={{ __html: signature.svg }} className="flex justify-center mb-4" />
             
-            <button 
-                onClick={() => ClawdSignShare.copyLink(signature.humanSignId, 'human')}
-                className="w-full py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-semibold transition-colors">
-                📋 Copy Link
-            </button>
-            
-            <button 
-                onClick={() => ClawdSignShare.downloadSignaturePNG(
-                    document.querySelector('svg'), 
-                    `human-sign-${signature.humanSignId}.png`
+            <div className="space-y-3">
+                <div className="text-center">
+                    <p className="text-sm text-gray-500">Verified Human</p>
+                    <p className="font-bold text-gray-900 text-xl">{signature.name}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="bg-blue-50 p-3 rounded">
+                        <p className="text-gray-500 text-xs">Signature ID</p>
+                        <p className="font-mono font-bold text-blue-600">{signature.signatureId}</p>
+                    </div>
+                    <div className="bg-cyan-50 p-3 rounded">
+                        <p className="text-gray-500 text-xs">Agent Owned</p>
+                        <p className="font-bold text-cyan-600">{signature.agentName}</p>
+                    </div>
+                </div>
+                
+                {signature.agentSignatureId && (
+                    <div className="bg-green-50 p-3 rounded text-sm">
+                        <p className="text-gray-500 text-xs mb-1">🔗 Linked to Agent</p>
+                        <p className="font-mono font-bold text-green-600">{signature.agentSignatureId}</p>
+                    </div>
                 )}
-                className="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition-colors">
+                
+                <div className="bg-gray-50 p-3 rounded text-xs text-gray-600">
+                    <p><strong>Email/Wallet:</strong> {signature.email}</p>
+                    <p className="mt-1"><strong>Created:</strong> {new Date(signature.createdAt).toLocaleString()}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div className="mt-6 space-y-3">
+            <button 
+                onClick={() => {
+                    const svgElement = document.querySelector('svg');
+                    if (svgElement) {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 600;
+                        canvas.height = 400;
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+                        const svgBlob = new Blob([signature.svg], { type: 'image/svg+xml' });
+                        const url = URL.createObjectURL(svgBlob);
+                        img.onload = () => {
+                            ctx.fillStyle = 'white';
+                            ctx.fillRect(0, 0, 600, 400);
+                            ctx.drawImage(img, 0, 0, 600, 400);
+                            canvas.toBlob((blob) => {
+                                const pngUrl = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = pngUrl;
+                                a.download = `human-sign-${signature.signatureId}.png`;
+                                a.click();
+                                URL.revokeObjectURL(pngUrl);
+                                URL.revokeObjectURL(url);
+                            });
+                        };
+                        img.src = url;
+                    }
+                }}
+                className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-colors">
                 📥 Download PNG
             </button>
             
             <button 
-                onClick={() => ClawdSignShare.shareToWhatsApp({
-                    name: signature.name,
-                    signatureId: signature.humanSignId,
-                    type: 'human'
-                })}
-                className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition-colors">
-                💬 Share on WhatsApp
+                onClick={() => {
+                    const text = `👤 I just verified my identity on ClawdSign!\n\nHuman: ${signature.name}\nSignature ID: ${signature.signatureId}\n\nhttps://clawdsign.vercel.app/human-sign.html\n\n#HumanVerified #OpenClaw #ClawdSign`;
+                    const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+                    window.open(twitterUrl, '_blank', 'width=550,height=420');
+                }}
+                className="w-full py-3 bg-white border-2 border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold">
+                🔗 Share on Twitter/X
             </button>
         </div>
     </div>
-                                                            )}
-
-
-                                    <script src="social-share.js"></script>
-                                        <div className="space-y-3">
-                                            <div className="text-center">
-                                                <p className="text-sm text-gray-500">Verified Human</p>
-                                                <p className="font-bold text-gray-900 text-xl">{signature.name}</p>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-3 text-sm">
-                                                <div className="bg-blue-50 p-3 rounded">
-                                                    <p className="text-gray-500 text-xs">Signature ID</p>
-                                                    <p className="font-mono font-bold text-blue-600">{signature.signatureId}</p>
-                                                </div>
-                                                <div className="bg-cyan-50 p-3 rounded">
-                                                    <p className="text-gray-500 text-xs">Agent Owned</p>
-                                                    <p className="font-bold text-cyan-600">{signature.agentName}</p>
-                                                </div>
-                                            </div>
-                                            {signature.agentSignatureId && (
-                                                <div className="bg-green-50 p-3 rounded text-sm">
-                                                    <p className="text-gray-500 text-xs mb-1">🔗 Linked to Agent</p>
-                                                    <p className="font-mono font-bold text-green-600">{signature.agentSignatureId}</p>
-                                                </div>
-                                            )}
-                                            <div className="bg-gray-50 p-3 rounded text-xs text-gray-600">
-                                                <p><strong>Email/Wallet:</strong> {signature.email}</p>
-                                                <p className="mt-1"><strong>Created:</strong> {new Date(signature.createdAt).toLocaleString()}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-6 space-y-3">
-                                        <button className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold">
-                                            📥 Download Signature
-                                        </button>
-                                        <button className="w-full py-3 bg-white border-2 border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold">
-                                            🔗 Share on Twitter/X
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+)}
                         </div>
                     </section>
 
@@ -449,5 +453,6 @@
         }
         ReactDOM.render(<HumanSignPage />, document.getElementById('root'));
     </script>
+     <script src="social-share.js"></script>
 </body>
 </html>
